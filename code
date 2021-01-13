@@ -1,0 +1,251 @@
+#LABA3:
+A = "3E3F9CADF55B2AF38E5E724670C0E7DF03E83036E6349C1BA098B1A4A65520250BD9F64B50D6226F48DD8C3424EC570D2D134631345F"
+B = "2455C7B1A866EFF01B84632D97ED39045F8D83F3555E22A0EF0416841D20D80C30BF398F40F7D9A86781432334600C0D5F593AB901FD"
+P = [431, 5, 3, 1, 0] #p(x)=x^431 + x^5 + x^3 + x +1 
+N = "6AB75F4EEA6E7DBBFC57715A941270D9820AF5B95AB1705893195EEBEB5988581E0A2670EF6E6F805D3B70FD594059403E65195DE598"
+m = 431
+a2 = [167, 78, 65, 22, 3, 2]
+b2 = [308, 145, 77, 65, 31, 9, 4, 0]
+a3 = [0, 0, 1, 1, 0, 1]
+b3 = [0, 0, 0, 1, 1, 1]
+a4 = [1, 0, 0, 1, 1, 1]
+a41 = [6, 2, 1, 0]
+a5 = [5, 2, 0]
+m1 = 6
+n1 = 29
+
+def To_Bin(S):
+    S = int(bin(int(S, 16))[2:])
+    S = [int(digit) for digit in str(S)]
+    while len(S) < m:
+        S.insert(0, 0)
+    return S 
+def To_Hex_From_Bin(G):
+    g1 = ''.join(str(e) for e in G)
+    g2 = int(g1, 2)
+    g3 = hex(g2)[2:]
+    return g3    
+A1 = To_Bin(A)
+B1 = To_Bin(B)
+print("А в полиномиальном базисе")
+print(A1)
+print("В в полиномиальном базисе:")
+print(B1)
+def From_Bin_To_Hex(G):
+    g1 = ''.join(str(e) for e in G) 
+    g2 = int(g1, 2) 
+    g3 = hex(g2)[2:] 
+    return g3 
+def Long_Compare(listW, listZ):
+    if len(listW) == len(listZ):
+        index = 0
+        while (listW[index] == listZ[index]):
+            index = index + 1
+            if index == len(listW):
+                return 0
+        if listW[index] > listZ[index]:
+            return 1
+        else:
+            return -1
+    else:
+        if len(listW) > len(listZ):
+            return 1
+        else:
+            return -1
+def LongShiftDigitsToHigh(listV, k):
+    for i in range(k):
+        listV.insert(0, 0)
+    return listV  
+def Remove_First_Zeroes(listY):
+    for index in range(len(listY)):
+        if listY[0] == 0:
+            listY.remove(listY[0])
+        else:
+            break
+    return listY     
+
+def Addition(A, B):
+    A1 = A[:]
+    B1 = B[:]
+    C = []
+    while(len(A1) < len(B1)):
+        LongShiftDigitsToHigh(A1, 1)
+    while(len(B1) < len(A1)):
+        LongShiftDigitsToHigh(B1, 1)    
+    for i in range(len(A1)):
+        c = A1[i] + B1[i]
+        c1 = c % 2
+        C.append(c1)
+    return C
+C = Addition(A1, B1)
+print("а + b в полиномиальном базисе:")
+print(C)
+C1 = From_Bin_To_Hex(C)
+print("a + b в ПБ в системе счисления Хекса:")
+print(C1)
+def From_Hex_To_Poly(Q):
+    Q1 = To_Bin(Q)
+    Q1.reverse()
+    D = []
+    for index in range(len(Q1)):
+            if Q1[index] == 1:
+                       D.append(index)
+    D.reverse()    
+    return D
+def From_Poly_To_Bin(Q):
+    Q1 = Q[:]
+    D = [0] * (Q1[0] + 1)
+    for i in range(len(Q1)):
+        D.insert(Q1[i], 1)
+        del D[Q1[i] + 1]
+    D.reverse()
+    return D  
+def From_Bin_To_Poly(Q):
+    Q1 = Q[:]
+    Q1.reverse()
+    D = []
+    for index in range(len(Q1)):
+            if Q1[index] == 1:
+                       D.append(index)
+    D.reverse()    
+    return D
+print("А в виде полинома:")
+a1 = From_Hex_To_Poly(A)
+print(a1)
+print("В в виде полинома:")
+b1 = From_Hex_To_Poly(B)
+print(b1)
+
+def Multiplication_PB(A1, B1):
+    C =[]
+    if len(A1) > len(B1):
+        for index in range(len(A1)):
+            for i in range(len(B1)):
+                T = A1[index] + B1[i]
+                C.append(T)
+                if C.count(T) % 2 == 0:
+                    for j in range(C.count(T)):
+                        C.remove(T)
+                elif (C.count(T) % 2 != 0 and C.count(T) != 1):
+                    C.remove(T)
+    else: 
+        for index in range(len(B1)):
+            for i in range(len(A1)):
+                T = B1[index] + A1[i]
+                C.append(T)
+                if C.count(T) % 2 == 0:
+                    for j in range(C.count(T)):
+                        C.remove(T)
+                elif (C.count(T) % 2 != 0 and C.count(T) != 1):
+                    C.remove(T)
+    C.sort()
+    C.reverse()
+    return C 
+print("A * B в ПБ :")
+D = Multiplication_PB(a1, b1)
+print(D)    
+def Addition_Poly(A, B):
+    A1 = A[:]
+    B1 = B[:]
+    C = A1 + B1
+    C1 = C[:]
+    C2 = []
+    for j in range(len(C1)):
+        if (C1.count(C1[j]) == 1):
+            C2.append(C1[j])
+        elif (C.count(C1[j]) % 2 != 0):
+            C2.append(C1[j])
+            C1[j] = '.'
+    C2.sort()
+    C2.reverse()
+    return C2
+def Div_Mod_PB(D, N):
+    D1 = D[:]
+    Q1 = []
+    i = D1[0] - N[0]
+    while (i >= 0):
+        N1 = []
+        k = D1[0] - N[0]
+        for j in range(len(N)):
+            N1.append(N[j] + k)
+        Q1.append(k)
+        D1 = Addition_Poly(D1, N1)
+        i = D1[0] - N[0]
+    return Q1, D1
+print("A*B mod P:")
+Q2, D2 = Div_Mod_PB(D, P)
+print(Div_Mod_PB(D, P))
+h1 = From_Poly_To_Bin(D2)
+h2 = From_Bin_To_Hex(h1)
+print("A*B mod P в системе счисления Хекс:")
+print(h2)
+def Remove_First_Zeroes(listY):
+    for index in range(len(listY)):
+        if listY[0] == 0:
+            listY.remove(listY[0])
+        else:
+            break
+    return listY     
+def LongShiftBitsToHigh(V, k):
+    V = V + [0] * k
+    return V
+def Degree_Of_Two_Bin(j):
+    k = 2 ** j
+    r = bin(k)[2:]
+    R = [int(digit) for digit in str(r)]
+    return R
+def Square_PB(a):
+    a1 = a[:]
+    a2 = []
+    for i in range(len(a1)):
+        if (i == len(a1) - 1):
+            a2.append(a1[i])
+            return a2
+        a2.append(a1[i])
+        a2.append(0)
+    return a2
+print("Элемент A^2 :")
+s = Square_PB(A1)
+print(s)
+print(len(s))
+s1 = From_Bin_To_Poly(s)
+print("А^2 mod P:")
+f1, f2 = Div_Mod_PB(s1, P)
+g2 = From_Poly_To_Bin(f2)
+print(g2)
+k2 = From_Bin_To_Hex(g2)
+print("А^2 mod P в системе счисления Хекс:")
+print(k2)
+def Power_PB(a, k):
+    a2 = a[:]
+    if k == 0:
+        return 1
+    elif k % 2 == 0:
+        s2 = Square_PB(a2)
+        for i in range(k//2):
+            s1 = Square_PB(a2)
+            s2 = Multiplication_PB(s1, s2)
+    else:
+        s2 = Square_PB(a2)
+        for i in range(k//2):
+            s1 = Square_PB(a2)
+            s2 = Multiplication_PB(s1, s2)
+        s2 = Multiplication_PB(s2, a2)    
+    return s2
+print("a^n:")
+f3 = Power_PB(a41, 8)
+print(f3)
+def Inv_Elem_PB(a, m9):
+    a1 = a[:]
+    a3 = Power_PB(a1, (2 ** m9) - 2)
+    return a3
+print("Обратный элемент a^-1:")
+Inv = Inv_Elem_PB(a41, m1)
+print(Inv)
+print("Перевірка множення:")
+S2 = Addition_Poly(Multiplication_PB(Q2, P), D2)
+print(S2)
+print(D)
+print("d^((2^m) - 1) ?=? 1")
+f = Power_PB(a41, (2 ** m1) - 1)
+print(f)    
